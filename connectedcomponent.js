@@ -36,11 +36,12 @@ const dfs = (graph, vertices, components = null) => {
 
     // dfs visit each vertex if still colored white.
     vertices.forEach(v => {
-        let component = [v];
         if(v.color === 'white'){
             // if vertex is white, it starts a new root of 
             // a component being discovered.
+            let component = [v];
             dfsVisit(graph, v, component);
+            // we want components to be outputted.
             if(components !== null && component.length > 0){
                 components.push(component);
             }
@@ -164,9 +165,3 @@ const graph = {
 
 let components = stronglyconnectedComponents(graph, vertices);
 console.log(components);
-// vertices.forEach(v => {
-//     console.log(`vertex ${v.val} start = ${v.d} finish = ${v.f}`);
-// });
-
-// console.log(transpose(graph, vertices));
-
