@@ -9,10 +9,19 @@ class LinkedList{
         }
         else{
             // we want the current node in the beginning.
-            let temp = this.head;
+            node.next = this.head;
             this.head = node;
-            node.next = temp;
         }
+    }
+
+    vertices(){
+        let list = [];
+        let current = this.head;
+        while(current != null){
+            list.push(current.vertex);
+            current = current.next;
+        }
+        return list;
     }
 }
 
@@ -49,6 +58,8 @@ const singleSourceShortestPath = (graph, source) => {
         vertices.set(v, vertex);
     });
 
+    vertices.get(source).d = 0;
+
     // 2. Topologically sort the vertices of the graph.
     let sortedVertices = topologicalSort(graph, vertices);
     
@@ -61,13 +72,15 @@ const singleSourceShortestPath = (graph, source) => {
         // for each edge u -> v, relax that edge.
         edges.forEach(edge => {
             let v = vertices.get(edge[0]);
-            let weight = edge[1];
-            relax(u,v,weight);
+            if(v !== undefined){
+                let weight = edge[1];
+                relax(u,v,weight);
+            }
         })
         current = current.next;
     };
 
-    console.log(vertices);
+    return sortedVertices;
 }
 
 const topologicalSort = (graph, vertices) => {
@@ -100,6 +113,16 @@ const dfsVisit = (graph,u, vertices, sortedVertices) => {
     sortedVertices.add(vertexNode);
 }
 
+const getPath = (v) => {
+    let path = [];
+    let current = v;
+    while(current !== null){
+        path.push(current.val);
+        current = current.p;
+    }
+    return path.reverse();
+}
+
 const graph = new Map();
 
 graph.set('t', [['x',7],['y',4],['z',2]]);
@@ -110,6 +133,8 @@ graph.set('r', [['s',5],['t',2]]);
 graph.set('s', [['x',6],['t',2]]);
 
 
-let sortedVertices = singleSourceShortestPath(graph);
-
+let sortedVertices = singleSourceShortestPath(graph,'s');
+sortedVertices.vertices().forEach(vertex =>{
+    console.log(`path is ${getPath(vertex)} and distance is ${vertex.d}`);
+});
 
